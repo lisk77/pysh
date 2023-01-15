@@ -8,7 +8,7 @@ pysh, being programmed in python, can be customized with python. It can also do 
 
 ## Installation
 
-As of right now this is a WIP. So if you want to use pysh, you will have to chmod the pysh.py file yourself to turn it into an executable.  
+As of right now this is a WIP. So if you want to use pysh, you will have to chmod the file yourself to turn it into an executable.  
 
 # Functionality
 
