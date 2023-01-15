@@ -20,4 +20,4 @@ As of right now this is a WIP. So if you want to use pysh, you will have to chmo
 
 ## Customization
 
-To customize your prompt, edit the pyshPrompt.py file. The `__repr__` method will be what is shown on screen. You can use any python library to customize the prompt and let it suite your astethic needs.
+To customize your prompt, edit the pyshPrompt.py file in the .config/pysh folder (LINUX). The `__repr__` method will be what is shown on screen. You can use any python library to customize the prompt and let it suite your astethic needs.
