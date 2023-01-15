@@ -1,0 +1,253 @@
+e = 2.7182818284590452353602874
+PI = 3.1415926535897932384626433
+GRATIO = 1.618033988749
+TAU = 6.2831853071795864769252867
+PIHALVE = 1.5707963267948966192313217
+DEG = 57.29577951308232
+LOGCONV = 0.434216239687
+LBCONV = 1.442695040889
+SQRT5 = 2.2360679775
+DIFFERENTIAL = 0.0001
+
+
+hexDec = {
+        "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7,
+        "8": 8, "9": 9, "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15
+}
+    
+def toDeg(x):
+    return x*DEG
+
+def _toRad(x):
+    return x/DEG
+
+def _fnEval(value, function, variable):
+    f = list(function)
+    for element in function:
+        try:
+            a = f.index(variable)
+            f[a] = str(value)
+        except:
+            continue
+        try:
+            b = f.index("e")
+            f[b] = str(e)
+        except:
+            continue
+        try:
+            c = f.index("PI")
+            f[c] = str(PI)
+        except:
+            continue
+    return eval("".join(f))
+
+def floor(x):
+    return int(x)
+
+def ceiling(x):
+    return floor(x)+1
+
+def fract(x):
+    return x-floor(x)
+
+def sqrt(x):
+    y = x*0.5
+    for n in range(100):
+        y = 0.5*(y+x/y)
+    return y
+
+def abs(x):
+    if x < 0: return -1*x
+    else: return x
+
+def ln(x):
+    return round((2*(x-1))/(x+1)*sum(0,10000, f"1/(2*k+1)*((({x}-1)**2)/(({x}+1)**2))**k", "k"), 3)
+
+def lg(x):
+    return round(ln(x)*LOGCONV, 3)
+
+def lb(x):
+    return round(ln(x)*LBCONV, 3)
+
+def log(x,base):
+    return round(ln(x)/ln(base), 3)
+
+def integral(start, end, function, variable):
+    i = 0
+    d = int((end-start)/DIFFERENTIAL)
+    i += _fnEval(start, function, variable)*DIFFERENTIAL
+    for step in range(d):
+        start += DIFFERENTIAL
+        i += _fnEval(start, function, variable)*DIFFERENTIAL
+    return round(i, 3)
+
+def pntDeriv(point: float, function: str, variable: chr):
+    y1 = _fnEval(point, function, variable)
+    y2 = _fnEval(point+DIFFERENTIAL, function, variable)
+    return round((y2-y1)/(DIFFERENTIAL), 3)
+
+def fnRoots(function: str, guess: float, variable: chr):
+    for n in range(50):
+        x = guess-(_fnEval(guess, function, variable)/pntDeriv(guess, function, variable))
+        guess = x
+    return round(x,3)
+
+def factorial(x: int):
+    n = 1
+    for mult in range(x):
+        n *= x-mult
+    return n
+
+def doubleFactorial(x: int):
+    n = 1
+    if x == 1:
+        return 1
+    elif x%2 == 0:
+        for mult in range(int(x/2)):
+            n *= (x-2*mult)
+        return n
+    elif x%2 != 0:
+        for mult in range(int((x+1)/2)):
+            n *= (x-2*mult)
+        return n
+
+def sin(x: float, degree=False):
+    if degree:
+        x = _toRad(x)
+    if x > TAU:
+        for times in range(floor(x/TAU)):
+            x -= TAU
+    y = x-(1/factorial(3))*(x**3)+(1/factorial(5))*(x**5)-(1/factorial(7))*(x**7)+(1/factorial(9))*(x**9)-(1/factorial(11))*(x**11)+(1/factorial(13))*(x**13)-(1/factorial(15))*(x**15)+(1/factorial(17))*(x**17)-(1/factorial(19))*(x**19)
+    return round(y, 3)
+
+def arcsin(x: float, degree=False):
+    y = sum(0, 1000, f"(doubleFactorial(2*k-1))/(doubleFactorial(2*k))*({x}**(2*k+1))/(2*k+1)", "k")
+    if not degree:
+        return round(y, 3)
+    else:
+        return round(y*DEG, 3)
+
+def cos(x: float, degree=False):
+    if degree:
+        x = _toRad(x)
+    y = sin(x+PIHALVE)
+    return round(y, 3)
+
+def arccos(x: float, degree=False):
+    y = PIHALVE - arcsin(x)
+    if not degree:
+        return round(y, 3)
+    else:
+        return round(y*DEG, 3)
+
+def tan(x: float, degree=False):
+    return round(sin(x)/cos(x), 3)
+
+def cot(x: float, degree=False):
+    return round(cos(x)/sin(x), 3)
+
+def sec(x: float, degree=False):
+    return round(1/cos(x), 3)
+
+def csc(x, degree=False):
+    return round(1/sin(x),3)
+
+def sinh(x, degree=False):
+    return round((1/2)*((e**x)-(e**(-x))), 3)
+
+def cosh(x, degree=False):
+    return round((1/2)*((e**x)+(e**(-x))), 3)
+
+def tanh(x, degree=False):
+    return round(sinh(x)/cosh(x), 3)
+
+def coth(x, degree=False):
+    return round(cosh(x)/sinh(x), 3)
+
+def sech(x, degree=False):
+    return round(1/cosh(x), 3)
+
+def csch(x, degree=False):
+    return round(1/sinh(x), 3)
+
+def solver(function: str, variable: chr, guess: float):
+    return round(fnRoots(function, guess, variable), 3)
+
+def _chunker(list, chunkSize):
+    return [list[pos:pos + chunkSize] for pos in range(0, len(list), chunkSize)]
+
+def binToText(binary):
+    return "".join([format((i), "d") for i in _chunker(binary.encode(), 7)])
+
+def binToHex(binary):
+    return "".join([format(i, "x")] for i in binary)
+
+def textToBin(text):
+    return "".join([format(ord(i), "b") for i in list(text)])
+
+def textToHex(text):
+    return "".join([format(ord(i), "x").capitalize() for i in list(text)])
+
+def hexToDec(hex):
+    if " " in list(hex):
+        hex = "".join(hex.split(" "))
+    dec = []
+    for i in _chunker(hex, 2):
+        dec.append(16*hexDec[i[0]]+hexDec[i[1]])
+    return dec
+
+def hexToText(hex):
+    return [chr(i) for i in hexToDec(hex)]
+
+def decToBin(dec):
+    if " " in list(dec):
+        dec = dec.split(" ")
+        return "".join([chr(int(i)) for i in dec])
+    else:
+        return "".join([chr(int(i)) for i in _chunker(dec, 2)])
+
+def rgbTohsl(r,g,b):
+    normR = r/255
+    normG = g/255
+    normB = b/255
+    cMax = max(normR, normG, normB)
+    cMin = min(normR, normG, normB)
+    delta = cMax-cMin
+
+    l = (cMax+cMin)*0.5
+
+    if delta == 0:
+        h = 0
+        s = 0
+    elif cMax == normR:
+        h = 60*(((normG-normB)/delta)%6)
+    elif cMax == normG:
+        h = 60*(((normB-normR)/delta)+2)
+    elif cMax == normB:
+        h = 60*(((normR-normG)/delta)+4)
+
+    if delta != 0:
+        s = (delta/(1-abs(2*l-1)))
+
+    return (round(h,0),round(s,3),round(l,3))
+
+def hslTorgb(h,s,l):
+    c = (1-abs(2*l-1))*s
+    x = c*(1-abs((h/60)%2 - 1))
+    m = l-c*0.5
+    normR, normG, normB = 0, 0, 0
+
+    if 0 <= h < 60:
+        (normR, normG, normB) = (c,x,0)
+    elif 60 <= h < 120:
+        (normR, normG, normB) = (x,c,0)
+    elif 120 <= h < 180:
+        (normR, normG, normB) = (0,c,x)
+    elif 180 <= h < 240:
+        (normR, normG, normB) = (0,x,c)
+    elif 240 <= h < 300:
+        (normR, normG, normB) = (x,0,c)
+    elif 300 <= h < 360:
+        (normR, normG, normB) = (c,0,x)
+
+    return (round((normR+m)*255, 0), round((normG+m)*255, ), ((normB+m)*255))
