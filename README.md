@@ -15,6 +15,7 @@ As of right now this is a WIP. So if you want to use pysh, you will have to chmo
 - [x] bash capabilities
 - [x] costumizable prompt
 - [x] prompt calculator
+- [x] aliases
 - [ ] syntax highlighting
 - [ ] up/down arrow capability
 
