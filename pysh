@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from rich.console import Console
-import os, sys, pwd
+import os, sys
 
 ### CONFIG ###
 
@@ -20,6 +20,33 @@ sys.path.insert(1, CONFIG_DIR)
 
 from pyshConfig import Prompt, aliases
 
+### THE SHELL ###
+
+def main():
+    run = True
+    while run:
+        pr = Prompt().__repr__()
+        line = Console().input(pr)
+        if line in aliases.keys():
+            line = aliases[line]
+            print(line)
+        if "exit" == line:
+            run = False
+        elif line.startswith("cd"):
+            _line = line.split(" ")
+            if len(_line) == 1:
+                os.chdir(os.path.expanduser("~"))
+            elif os.path.exists(_line[1]):
+                os.chdir(_line[1])
+        else:
+            try:
+                print(eval(line))
+            except:
+                try:
+                    os.system(line)
+                except:
+                    print("pysh: Unknown command!")
+
 ### MATH ###
 
 e = 2.7182818284590452353602874
@@ -37,7 +64,7 @@ hexDec = {
         "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7,
         "8": 8, "9": 9, "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15
 }
-
+    
 def toDeg(x):
     return x*DEG
 
@@ -280,32 +307,6 @@ def hslTorgb(h,s,l):
         (normR, normG, normB) = (c,0,x)
 
     return (round((normR+m)*255, 0), round((normG+m)*255, ), ((normB+m)*255))
-
-### THE SHELL ###
-
-def main():
-    run = True
-    while run:
-        pr = Prompt().__repr__()
-        line = Console().input(pr)
-        if line in aliases.keys():
-            line = aliases[line]
-        if "exit" == line:
-            run = False
-        elif line.startswith("cd"):
-            _line = line.split(" ")
-            if len(_line) == 1:
-                os.chdir(os.path.expanduser("~"))
-            elif os.path.exists(_line[1]):
-                os.chdir(_line[1])
-        else:
-            try:
-                print(eval(line))
-            except:
-                try:
-                    os.system(line)
-                except:
-                    print("pysh: Unknown command!")
 
 if __name__ == "__main__":
     try:
